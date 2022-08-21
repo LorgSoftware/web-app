@@ -1,0 +1,4 @@
+--debug
+--class-path src
+-main Main
+-cpp build
