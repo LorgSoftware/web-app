@@ -1,3 +1,4 @@
 build
 lorg
 test.lorg
+build-web/lorg.js
