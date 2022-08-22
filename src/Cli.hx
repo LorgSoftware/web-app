@@ -7,7 +7,7 @@ typedef CommandArguments = {
 /**
  * The CLI version.
  */
-class VersionCli
+class Cli
 {
     public function new()
     {
