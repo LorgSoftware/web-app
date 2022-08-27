@@ -66,10 +66,20 @@ class Cli
             {
                 arguments.config.displayTotalNode = false;
             }
+            else if(args[i] == "--prettify")
+            {
+                arguments.config.prettify = true;
+            }
             else
             {
-                arguments.filepath = args[i];
-                break;
+                if(arguments.filepath == "")
+                {
+                    arguments.filepath = args[i];
+                }
+                else
+                {
+                    // TODO: raise error
+                }
             }
             i++;
         }

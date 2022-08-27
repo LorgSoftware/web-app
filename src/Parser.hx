@@ -58,20 +58,34 @@ class Parser
 
     public function getResultAsString():String
     {
-        var lines:Array<String> = [];
+        var nodesToConvert:Array<Node> = [];
         if(config.displayTotalNode)
         {
-            lines = convertNodeToString(totalNode);
+            nodesToConvert.push(totalNode);
         }
         else
         {
             for(node in totalNode.children)
             {
-                var nodeLines = convertNodeToString(node);
-                for(line in nodeLines)
-                {
-                    lines.push(line);
-                }
+                nodesToConvert.push(node);
+            }
+        }
+
+        var lines:Array<String> = [];
+        for(node in nodesToConvert)
+        {
+            var nodeLines:Array<String>;
+            if(config.prettify)
+            {
+                nodeLines = convertNodeToStringPretty(node);
+            }
+            else
+            {
+                nodeLines = convertNodeToStringSimple(node);
+            }
+            for(line in nodeLines)
+            {
+                lines.push(line);
             }
         }
         return lines.join("\n");
@@ -138,50 +152,128 @@ class Parser
         }
     }
 
-    private function convertNodeToString(node:Node, indentLevel:Int=0):Array<String>
+    private inline function shouldHideUnit(unit:Unit):Bool
     {
+        return (
+            (unit.isIgnored && !config.displayIgnored)  ||
+            (unit.isIgnored && !unit.isReal && !config.displayIgnoredAndCalculated)
+        );
+    }
+
+    private inline function unitToString(unit:Unit):String
+    {
+        var str = '¤ ${unit.name}: ${unit.value}';
+        if(!unit.isReal)
+        {
+            str += ' [Calculated]';
+        }
+        if(unit.isIgnored)
+        {
+            str += ' [Ignored]';
+        }
+        return str;
+    }
+
+    private function convertNodeToStringSimple(
+        node:Node, indentLevel=0
+    ):Array<String>
+    {
+        var lines:Array<String> = [];
+
+        var heading = "#";
         var indent = "";
         for(i in 0...indentLevel)
         {
+            heading += "#";
             indent += "  ";
         }
-        var heading = "#";
-        for(i in 0...indentLevel)
-        {
-            heading += "#";
-        }
-
-        var lines = ['${indent}${heading} ${node.title}'];
+        lines.push('${indent}${heading} ${node.title}');
 
         for(name in sortedUnitNames)
         {
-            var value = node.units[name].value;
-            var isIgnored = node.units[name].isIgnored;
-            var isReal = node.units[name].isReal;
+            if(shouldHideUnit(node.units[name]))
+            {
+                continue;
+            }
+            var unitStr = unitToString(node.units[name]);
+            lines.push('${indent}  ${unitStr}');
+        }
 
-            if(
-                (isIgnored && !config.displayIgnored)  ||
-                (isIgnored && !isReal && !config.displayIgnoredAndCalculated)
-            )
+        for(i in 0...node.children.length)
+        {
+            var child = node.children[i];
+            var childLines = convertNodeToStringSimple(child, indentLevel + 1);
+            for(line in childLines)
+            {
+                lines.push(line);
+            }
+        }
+
+        return lines;
+    }
+
+    private function convertNodeToStringPretty(
+        node:Node, indentLevel:Int=0, prefixFromParent="",
+        hasNextSibling:Bool=false
+    ):Array<String>
+    {
+        var lines:Array<String> = [];
+
+        if(indentLevel == 0)
+        {
+            lines.push('${node.title}');
+        }
+        else
+        {
+            if(hasNextSibling)
+            {
+                lines.push('${prefixFromParent}├── ${node.title}');
+            }
+            else
+            {
+                lines.push('${prefixFromParent}└── ${node.title}');
+            }
+        }
+
+        var prefixForNextLines:String = "";
+        {
+            if(indentLevel == 0)
+            {
+                prefixForNextLines = "";
+            }
+            else
+            {
+                var toAdd = hasNextSibling ? "│   " : "    ";
+                prefixForNextLines = prefixFromParent + toAdd;
+            }
+        };
+
+        for(name in sortedUnitNames)
+        {
+            if(shouldHideUnit(node.units[name]))
             {
                 continue;
             }
 
-            var toDisplay = '${indent}  ¤ ${name}: ${value}';
-            if(!isReal)
+            var unitStr = unitToString(node.units[name]);
+            if(node.children.length != 0)
             {
-                toDisplay += ' [Calculated]';
+                lines.push('${prefixForNextLines}│ ${unitStr}');
             }
-            if(isIgnored)
+            else
             {
-                toDisplay += ' [Ignored]';
+                lines.push('${prefixForNextLines}  ${unitStr}');
             }
-            lines.push(toDisplay);
         }
 
-        for(child in node.children)
+        for(i in 0...node.children.length)
         {
-            var childLines = convertNodeToString(child, indentLevel + 1);
+            var child = node.children[i];
+            var childHasNextSibling = (i < node.children.length - 1);
+            var childLines = convertNodeToStringPretty(
+                child, indentLevel + 1, prefixForNextLines, childHasNextSibling
+            );
+
             for(line in childLines)
             {
                 lines.push(line);
