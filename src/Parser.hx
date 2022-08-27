@@ -130,8 +130,13 @@ class Parser
         {
             indent += "  ";
         }
+        var heading = "#";
+        for(i in 0...indentLevel)
+        {
+            heading += "#";
+        }
 
-        var lines = ['${indent}# ${node.title}'];
+        var lines = ['${indent}${heading} ${node.title}'];
 
         for(name in sortedUnitNames)
         {
