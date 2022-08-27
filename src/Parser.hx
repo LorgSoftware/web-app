@@ -58,7 +58,22 @@ class Parser
 
     public function getResultAsString():String
     {
-        var lines = convertNodeToString(totalNode);
+        var lines:Array<String> = [];
+        if(config.displayTotalNode)
+        {
+            lines = convertNodeToString(totalNode);
+        }
+        else
+        {
+            for(node in totalNode.children)
+            {
+                var nodeLines = convertNodeToString(node);
+                for(line in nodeLines)
+                {
+                    lines.push(line);
+                }
+            }
+        }
         return lines.join("\n");
     }
 

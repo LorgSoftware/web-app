@@ -62,6 +62,10 @@ class Cli
             {
                 arguments.config.displayIgnoredAndCalculated = false;
             }
+            else if(args[i] == "--no-total")
+            {
+                arguments.config.displayTotalNode = false;
+            }
             else
             {
                 arguments.filepath = args[i];
