@@ -58,6 +58,10 @@ class Cli
             {
                 arguments.config.displayIgnored = false;
             }
+            else if(args[i] == "--no-ignored-and-calculated")
+            {
+                arguments.config.displayIgnoredAndCalculated = false;
+            }
             else
             {
                 arguments.filepath = args[i];

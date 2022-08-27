@@ -107,7 +107,7 @@ class Parser
         var childrenUnitsToIgnore:Map<String, Bool> = [];
         for(name in node.units.keys())
         {
-            if(node.units[name].isReal)
+            if(node.units[name].isReal || node.units[name].isIgnored)
             {
                 childrenUnitsToIgnore[name] = true;
             }
@@ -144,7 +144,10 @@ class Parser
             var isIgnored = node.units[name].isIgnored;
             var isReal = node.units[name].isReal;
 
-            if(isIgnored && !config.displayIgnored)
+            if(
+                (isIgnored && !config.displayIgnored)  ||
+                (isIgnored && !isReal && !config.displayIgnoredAndCalculated)
+            )
             {
                 continue;
             }
