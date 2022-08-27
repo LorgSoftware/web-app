@@ -14,6 +14,8 @@ class Parser
     private var existingUnits:Map<String, Bool>;
     private var sortedUnitNames:Array<String>;
 
+    private final config:Config;
+
     public var hasError:Bool;
     public var errorMessage:String;
 
@@ -28,8 +30,9 @@ class Parser
         errorMessage = "";
     }
 
-    public function new()
+    public function new(config:Config)
     {
+        this.config = config;
         reset();
     }
 
@@ -135,6 +138,11 @@ class Parser
             var value = node.units[name].value;
             var isIgnored = node.units[name].isIgnored;
             var isReal = node.units[name].isReal;
+
+            if(isIgnored && !config.displayIgnored)
+            {
+                continue;
+            }
 
             var toDisplay = '${indent}  ¤ ${name}: ${value}';
             if(!isReal)

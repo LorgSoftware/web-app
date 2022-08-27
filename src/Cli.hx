@@ -2,6 +2,7 @@ package;
 
 typedef CommandArguments = {
     var filepath:String;
+    var config:Config;
 }
 
 /**
@@ -25,7 +26,7 @@ class Cli
         }
         var content = sys.io.File.getContent(filepath);
 
-        var parser = new Parser();
+        var parser = new Parser(arguments.config);
         parser.parse(content);
         if(!parser.hasError)
         {
@@ -46,12 +47,23 @@ class Cli
     private static function parseCommandArguments():CommandArguments
     {
         var arguments = {
-            filepath : ""
+            filepath : "",
+            config : new Config(),
         };
         var args = Sys.args();
-        if(args.length >= 1)
+        var i = 0;
+        while(i < args.length)
         {
-            arguments.filepath = args[0];
+            if(args[i] == "--no-ignored")
+            {
+                arguments.config.displayIgnored = false;
+            }
+            else
+            {
+                arguments.filepath = args[i];
+                break;
+            }
+            i++;
         }
         return arguments;
     }
