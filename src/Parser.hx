@@ -58,37 +58,40 @@ class Parser
 
     public function getResultAsString():String
     {
-        var nodesToConvert:Array<Node> = [];
-        if(config.displayTotalNode)
-        {
-            nodesToConvert.push(totalNode);
-        }
-        else
-        {
-            for(node in totalNode.children)
-            {
-                nodesToConvert.push(node);
-            }
-        }
+        var nodesToConvert:Array<Node> = getNodesToConvert();
+        var convert = (config.prettify) ?
+            function(node:Node) { return convertNodeToStringPretty(node); } :
+            function(node:Node) { return convertNodeToStringSimple(node); };
 
         var lines:Array<String> = [];
-        for(node in nodesToConvert)
+        for(node in getNodesToConvert())
         {
-            var nodeLines:Array<String>;
-            if(config.prettify)
-            {
-                nodeLines = convertNodeToStringPretty(node);
-            }
-            else
-            {
-                nodeLines = convertNodeToStringSimple(node);
-            }
+            var nodeLines = convert(node);
             for(line in nodeLines)
             {
                 lines.push(line);
             }
         }
         return lines.join("\n");
+    }
+
+    public function getResultAsJson():String
+    {
+        var nodesToConvert:Array<Node> = getNodesToConvert();
+        var spaces = (config.prettify) ? "    " : null;
+        return haxe.Json.stringify(nodesToConvert, null, spaces);
+    }
+
+    private function getNodesToConvert():Array<Node>
+    {
+        if(config.displayTotalNode)
+        {
+            return [totalNode];
+        }
+        else
+        {
+            return totalNode.children;
+        }
     }
 
     private function extractTotalNodeFromText(content:String):Void

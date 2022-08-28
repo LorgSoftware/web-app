@@ -28,13 +28,19 @@ class Cli
 
         var parser = new Parser(arguments.config);
         parser.parse(content);
-        if(!parser.hasError)
+        if(parser.hasError)
         {
-            Sys.println(parser.getResultAsString());
+            printError('${parser.errorMessage}');
+            return;
+        }
+
+        if(arguments.config.toJson)
+        {
+            Sys.println(parser.getResultAsJson());
         }
         else
         {
-            printError('${parser.errorMessage}');
+            Sys.println(parser.getResultAsString());
         }
     }
 
@@ -69,6 +75,10 @@ class Cli
             else if(args[i] == "--prettify")
             {
                 arguments.config.prettify = true;
+            }
+            else if(args[i] == "--to-json")
+            {
+                arguments.config.toJson = true;
             }
             else
             {

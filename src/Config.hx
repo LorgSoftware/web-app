@@ -9,6 +9,7 @@ class Config
     public var displayIgnoredAndCalculated:Bool = true;
     public var displayTotalNode:Bool = true;
     public var prettify:Bool = false;
+    public var toJson:Bool = false;
 
     public function new()
     {
