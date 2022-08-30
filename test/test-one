@@ -3,6 +3,7 @@
 
 # Launches one test suite. Takes as an argument the folder containing the test
 # suite.
+#
 # The goal of this script is to display to the user the difference between the
 # expected result (stated in the expected file) from the command (stated in the
 # command file) and the actual result. Most of the time, the user should use
@@ -13,6 +14,7 @@
 # The exit error code if there is a problem with the execution of the test
 # suite (wrong arguments, missing files...). This is to denote the exit values
 # from the diff command.
+# NOTE: update the value in test-all if this is changed here.
 ERROR_TEST=113
 
 cd "$(dirname $0)"
