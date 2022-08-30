@@ -1,0 +1,71 @@
+#!/bin/sh
+
+
+# Launches one test suite. Takes as an argument the folder containing the test
+# suite.
+# The goal of this script is to display to the user the difference between the
+# expected result (stated in the expected file) from the command (stated in the
+# command file) and the actual result. Most of the time, the user should use
+# the script "test-all" to test everything and then checking the single one
+# failed test suites using this script manually.
+
+
+# The exit error code if there is a problem with the execution of the test
+# suite (wrong arguments, missing files...). This is to denote the exit values
+# from the diff command.
+ERROR_TEST=113
+
+cd "$(dirname $0)"
+
+# Check if lorg executable exists
+if [ ! -x "../lorg" ]; then
+    echo "Impossible to find the executable. Did you compile the project?"
+    echo "lorg should be at the root folder of the project."
+    exit $ERROR_TEST
+fi
+
+# Check if the arguments are correct
+if [ $# -ne 1 ]; then
+    echo "Usage:"
+    echo "  test-one TEST_SUITE_FOLDER"
+    exit $ERROR_TEST
+fi
+
+folder="$1"
+command_file="command"
+expected_file="expected.txt"
+input_file="input.lorg"
+
+# Check if the argument is a correct existing test suite
+if [ ! -d "$1" ]; then
+    printf "%s is missing or is not a folder.\n" "$folder"
+    exit $ERROR_TEST
+fi
+if [ ! -f "$folder/$command_file" ]; then
+    printf "%s is missing or is not a regular file in %s.\n" "$command_file" "$folder"
+    exit $ERROR_TEST
+fi
+if [ ! -f "$folder/$expected_file" ]; then
+    printf "%s is missing or is not a regular file in %s.\n" "$expected_file" "$folder"
+    exit $ERROR_TEST
+fi
+if [ ! -f "$folder/$expected_file" ]; then
+    printf "%s is missing or is not a regular file in %s.\n" "$expected_file" "$folder"
+    exit $ERROR_TEST
+fi
+
+cd "$folder"
+
+# Check if the command is correct
+command_content="$(cat "$command_file")"
+if [ "${command_content%% *}" != "lorg" ]; then
+    printf "The command in %s file should start by \"lorg\"\n" "$command_file"
+    exit $ERROR_TEST
+fi
+
+# Do the test
+command_to_do="../../$command_content"
+result_file=$(mktemp)
+trap 'rm "$result_file"; trap - EXIT; exit' EXIT INT HUP TERM
+$command_to_do > $result_file
+diff "$expected_file" "$result_file"
