@@ -80,6 +80,18 @@ class Cli
             {
                 arguments.config.toJson = true;
             }
+            else if(args[i] == "--total-name")
+            {
+                i++;
+                if(i < args.length)
+                {
+                    arguments.config.totalName = args[i];
+                }
+                else
+                {
+                    // TODO: raise error because of missing argument
+                }
+            }
             else
             {
                 if(arguments.filepath == "")

@@ -23,7 +23,7 @@ class Parser
 
     private function reset():Void
     {
-        totalNode = new Node("TOTAL");
+        totalNode = new Node(config.totalName);
         existingUnits = [];
         sortedUnitNames = [];
         hasError = false;
