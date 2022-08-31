@@ -66,8 +66,23 @@ if [ "${command_content%% *}" != "lorg" ]; then
 fi
 
 # Do the test
-command_to_do="../../$command_content"
 result_file=$(mktemp)
 trap 'rm "$result_file"; trap - EXIT; exit' EXIT INT HUP TERM
-$command_to_do > $result_file
+command_to_do="../../$command_content"
+# eval command is often seen as dangerous but this is necessary here.
+# We use the eval command because the command file can contain quoted
+# arguments. When not using the eval command, the quoted arguments are messed
+# up.
+# For example, if the command file contains:
+#    lorg input.lorg --total-name "New total name"
+# The line
+#    $command_to_do > $result_file
+# is replaced by
+#    ../../lorg input.lorg --total-name New total name > /tmp/content-of-result_file
+# We cannot use the line
+#    "$command_to_do" > $result_file
+# because it would be replaced by
+#    '../../lorg input.lorg --total-name "New total name"' > /tmp/content-of-result_file
+# so the shell environment will look for this weird file path.
+eval $command_to_do > $result_file
 diff "$expected_file" "$result_file"
