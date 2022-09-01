@@ -19,5 +19,6 @@ web-release: $(FILES)
 
 clean:
 	rm -rf build
+	rm -rf lorg
 
 .PHONY: clean cli-release cli-debug web-release web-debug
