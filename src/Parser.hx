@@ -165,7 +165,7 @@ class Parser
 
     private inline function unitToString(unit:Unit):String
     {
-        var str = '¤ ${unit.name}: ${unit.value}';
+        var str = '$ ${unit.name}: ${unit.value}';
         if(!unit.isReal)
         {
             str += ' [Calculated]';
@@ -397,7 +397,7 @@ class Parser
     private function getUnitDefinitionRegex():EReg
     {
         // TODO: change the unit value regex?
-        return ~/^\s*¤\s*(.+)\s*:\s*(.+)/;
+        return ~/^\s*\$\s*(.+)\s*:\s*(.+)/;
     }
 
     private function isUnitDefinition(line:String):Bool

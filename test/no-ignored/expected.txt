@@ -1,7 +1,7 @@
 # TOTAL
-  ¤ Unit: 1 [Calculated]
+  $ Unit: 1 [Calculated]
   ## A
-    ¤ Unit: 1
+    $ Unit: 1
     ### A-A
       #### A-A-A
       #### A-A-B

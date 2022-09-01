@@ -1,6 +1,6 @@
 # TOTAL
-  ¤ Unit 1: 15 [Calculated]
-  ¤ Unit 2: 27.5 [Calculated]
+  $ Unit 1: 15 [Calculated]
+  $ Unit 2: 27.5 [Calculated]
   ## Node title
-    ¤ Unit 1: 15
-    ¤ Unit 2: 27.5
+    $ Unit 1: 15
+    $ Unit 2: 27.5

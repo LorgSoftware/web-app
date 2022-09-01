@@ -3,11 +3,11 @@ calculated unit are explicitely displayed as "Calculated".
 # A
 ## A-A
 ### A-A-A
-¤ Unit: 1
+$ Unit: 1
 ### A-A-B
-¤ Unit: 2
+$ Unit: 2
 ## A-B
 ### A-B-A
-¤ Unit: 3
+$ Unit: 3
 ### A-B-B
-¤ Unit: 4
+$ Unit: 4
