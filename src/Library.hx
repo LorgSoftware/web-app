@@ -7,8 +7,13 @@ package;
 @:expose("Lorg")
 class Library
 {
-    public static function createParser():Parser
+    public static function createParser(config:Config):Parser
     {
-        return new Parser();
+        return new Parser(config);
+    }
+
+    public static function createConfig():Config
+    {
+        return new Config();
     }
 }
