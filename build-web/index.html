@@ -14,49 +14,121 @@
             min-height: 100%;
         }
 
-        .row {
+        .editor {
+            height: 100%;
+            min-height: 100%;
+        }
+
+        .editor__input-panel {
             display: flex;
             height: 100%;
             min-height: 100%;
         }
 
-        .column {
+        .editor__input-column {
             flex: 50%;
             height: 100%;
             min-height: 100%;
         }
 
-        #user-content {
+        .editor__result-column {
+            flex: 50%;
+            height: 100%;
+            min-height: 100%;
+        }
+
+        .editor__user-content {
             width: 90%;
             height: 90%;
         }
+
+        .editor__options-panel {
+            display: flex;
+        }
+
     </style>
 </head>
 <body>
-    <div class="row">
-        <div class="column">
-            <textarea id="user-content"></textarea><br/>
-            <button id="button-submit">Submit</button>
+
+    <div class="editor">
+        <div class="editor__options-panel">
+            <div class="editor__option">
+                <input type="checkbox" id="no-ignored" /><label for="no-ignored">No ignored</label>
+            </div>
+            <div class="editor__option">
+                <input type="checkbox" id="no-ignored-and-calculated" /><label for="no-ignored-and-calculated">No ignored and calculated</label>
+            </div>
+            <div class="editor__option">
+                <input type="checkbox" id="no-total" /><label for="no-total">No total</label>
+            </div>
+            <div class="editor__option">
+                <input type="checkbox" id="prettify" /><label for="prettify">Prettify</label>
+            </div>
+            <div class="editor__option">
+                <input type="checkbox" id="to-json" /><label for="to-json">To JSON</label>
+            </div>
+            <div class="editor__option">
+                <label for="total-name">Total name</label>: <input type="text" id="total-name" />
+            </div>
         </div>
-        <div class="column">
-            <pre id="result-display"></pre>
+        <div class="editor__input-panel">
+            <div class="editor__input-column">
+                <textarea id="user-content" class="editor__user-content"></textarea><br/>
+                <button id="button-submit">Submit</button>
+                Or press Ctrl + Enter.
+            </div>
+            <div class="editor__result-column">
+                <pre id="result-display"></pre>
+            </div>
         </div>
-    </div> 
+    </div>
 
 
     <script src="lorg.js" type="text/javascript"></script>
     <script>
-        document.getElementById("button-submit").onclick = function() {
+        function updateResult() {
+            var config = Lorg.createConfig();
+            config.displayIgnored = !document.getElementById("no-ignored").checked;
+            config.displayIgnoredAndCalculated = !document.getElementById("no-ignored-and-calculated").checked;
+            config.displayTotalNode = !document.getElementById("no-total").checked;
+            config.prettify = document.getElementById("prettify").checked;
+            config.toJson = document.getElementById("to-json").checked;
+            config.totalName = document.getElementById("total-name").value;
             var content = document.getElementById("user-content").value;
-            var parser = Lorg.createParser();
+            var parser = Lorg.createParser(config);
             parser.parse(content);
             if(!parser.hasError) {
-                var result = parser.getResultAsString();
+                var result;
+                if(config.toJson) {
+                    result = parser.getResultAsJson();
+                } else {
+                    result = parser.getResultAsString();
+                }
                 document.getElementById("result-display").innerText = result;
             } else {
                 document.getElementById("result-display").innerText = parser.errorMessage;
             }
         }
+
+        function initialize() {
+            var config = Lorg.createConfig();
+            document.getElementById("no-ignored").checked = !config.displayIgnored;
+            document.getElementById("no-ignored-and-calculated").checked = !config.displayIgnoredAndCalculated;
+            document.getElementById("no-total").checked = !config.displayTotalNode;
+            document.getElementById("prettify").checked = config.prettify;
+            document.getElementById("to-json").checked = config.toJson;
+            document.getElementById("total-name").value = config.totalName;
+
+            document.getElementById("user-content").onkeypress = function(e) {
+                if(e.key = "Enter" && e.ctrlKey === true) {
+                    updateResult();
+                }
+            };
+            document.getElementById("button-submit").onclick = updateResult;
+        }
+
+        initialize();
+
     </script>
 </body>
 </html>
