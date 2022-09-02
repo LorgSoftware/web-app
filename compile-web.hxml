@@ -1,3 +1,4 @@
+-D haxeJSON
 -cp src
 Library
 -js build-web/lorg.js
