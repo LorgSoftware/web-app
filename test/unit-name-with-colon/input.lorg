@@ -1,0 +1,15 @@
+Test if it is possible to have colons in the unit name. Colons are useful for
+example in accountability.
+
+# Mall
+## Clothing store
+$ expenses:various : 30
+## Supermarket
+$ expenses:food : 30
+## Book store
+$ expenses:various : 5
+# Down town
+## Museum
+$ expenses:various : 10
+## Restaurant
+$ expenses:food : 35

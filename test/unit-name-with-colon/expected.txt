@@ -1,0 +1,24 @@
+# TOTAL
+  $ expenses:food : 65 [Calculated]
+  $ expenses:various : 45 [Calculated]
+  ## Mall
+    $ expenses:food : 30 [Calculated]
+    $ expenses:various : 35 [Calculated]
+    ### Clothing store
+      $ expenses:food : 0 [Calculated]
+      $ expenses:various : 30
+    ### Supermarket
+      $ expenses:food : 30
+      $ expenses:various : 0 [Calculated]
+    ### Book store
+      $ expenses:food : 0 [Calculated]
+      $ expenses:various : 5
+  ## Down town
+    $ expenses:food : 35 [Calculated]
+    $ expenses:various : 10 [Calculated]
+    ### Museum
+      $ expenses:food : 0 [Calculated]
+      $ expenses:various : 10
+    ### Restaurant
+      $ expenses:food : 35
+      $ expenses:various : 0 [Calculated]
