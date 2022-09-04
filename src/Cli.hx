@@ -60,31 +60,31 @@ class Cli
         var i = 0;
         while(i < args.length)
         {
-            if(args[i] == "--no-ignored")
+            if(args[i] == "--no-ignored" || args[i] == "-nig")
             {
                 arguments.config.displayIgnored = false;
             }
-            else if(args[i] == "--no-ignored-and-calculated")
+            else if(args[i] == "--no-ignored-and-calculated" || args[i] == "-nic")
             {
                 arguments.config.displayIgnoredAndCalculated = false;
             }
-            else if(args[i] == "--no-total")
+            else if(args[i] == "--no-total" || args[i] == "-nt")
             {
                 arguments.config.displayTotalNode = false;
             }
-            else if(args[i] == "--no-indent")
+            else if(args[i] == "--no-indent" || args[i] == "-nin")
             {
                 arguments.config.addIndent = false;
             }
-            else if(args[i] == "--prettify")
+            else if(args[i] == "--prettify" || args[i] == "-p")
             {
                 arguments.config.prettify = true;
             }
-            else if(args[i] == "--to-json")
+            else if(args[i] == "--to-json" || args[i] == "-tj")
             {
                 arguments.config.toJson = true;
             }
-            else if(args[i] == "--total-name")
+            else if(args[i] == "--total-name" || args[i] == "-tn")
             {
                 i++;
                 if(i < args.length)
