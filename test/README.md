@@ -9,8 +9,8 @@ following files.
 * `command`: contains the command to test.
 * `expected.txt`: contains the expected result.
 
-Optionally a folder can contain a `README.md` to give more information about
-the test suite (why this test suite was created, which issue id it refers...).
+In the `input.lorg` you can write information about the test suite (why this
+test suite was created, which issue id it refers...).
 
 If a test suite was created after fixing a bug, the folder name should be
 prefixed using the format `bug-ID` (`ID` should be the issue id in the issue
