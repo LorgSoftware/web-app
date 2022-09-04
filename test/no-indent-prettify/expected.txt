@@ -1,0 +1,16 @@
+TOTAL
+│ $ Unit: 1 [Calculated]
+└── A
+    │ $ Unit: 1
+    ├── A-A
+    │   │ $ Unit: 999 [Ignored]
+    │   ├── A-A-A
+    │   │     $ Unit: 1 [Ignored]
+    │   └── A-A-B
+    │         $ Unit: 2 [Ignored]
+    └── A-B
+        │ $ Unit: 7 [Calculated] [Ignored]
+        ├── A-B-A
+        │     $ Unit: 3 [Ignored]
+        └── A-B-B
+              $ Unit: 4 [Ignored]
