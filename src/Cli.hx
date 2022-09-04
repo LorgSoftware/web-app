@@ -72,6 +72,10 @@ class Cli
             {
                 arguments.config.displayTotalNode = false;
             }
+            else if(args[i] == "--no-indent")
+            {
+                arguments.config.addIndent = false;
+            }
             else if(args[i] == "--prettify")
             {
                 arguments.config.prettify = true;

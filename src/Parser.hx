@@ -190,6 +190,10 @@ class Parser
             heading += "#";
             indent += "  ";
         }
+        if(!config.addIndent)
+        {
+            indent = "";
+        }
         lines.push('${indent}${heading} ${node.title}');
 
         for(name in sortedUnitNames)
@@ -199,7 +203,14 @@ class Parser
                 continue;
             }
             var unitStr = unitToString(node.units[name]);
-            lines.push('${indent}  ${unitStr}');
+            if(config.addIndent)
+            {
+                lines.push('${indent}  ${unitStr}');
+            }
+            else
+            {
+                lines.push(unitStr);
+            }
         }
 
         for(i in 0...node.children.length)
