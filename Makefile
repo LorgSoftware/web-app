@@ -11,11 +11,9 @@ cli-release: $(FILES)
 
 web-debug: $(FILES)
 	haxe --debug compile-web.hxml
-	cp -f build/Main-debug $(CLI_NAME)
 
 web-release: $(FILES)
 	haxe --dce full compile-web.hxml
-	cp -f build/Main $(CLI_NAME)
 
 clean:
 	rm -rf build
