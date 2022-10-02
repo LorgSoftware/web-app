@@ -10,6 +10,9 @@ typedef CommandArguments = {
  */
 class Cli
 {
+    public static final EXIT_ERROR_ARGUMENTS:Int = 1;
+    public static final EXIT_ERROR_PARSER:Int = 2;
+
     public function new()
     {
         var arguments = parseCommandArguments();
@@ -17,12 +20,12 @@ class Cli
         if(!sys.FileSystem.exists(filepath))
         {
             printError('"$filepath" does not exist.');
-            return;
+            Sys.exit(EXIT_ERROR_ARGUMENTS);
         }
         if(sys.FileSystem.isDirectory(filepath))
         {
             printError('"$filepath" is a directory.');
-            return;
+            Sys.exit(EXIT_ERROR_ARGUMENTS);
         }
         var content = sys.io.File.getContent(filepath);
 
@@ -32,6 +35,7 @@ class Cli
         {
             printError('${parser.errorMessage}');
             return;
+            Sys.exit(EXIT_ERROR_PARSER);
         }
 
         if(arguments.config.toJson)
@@ -93,7 +97,8 @@ class Cli
                 }
                 else
                 {
-                    // TODO: raise error because of missing argument
+                    printError('The option ${args[i-1]} requires an argument.');
+                    Sys.exit(EXIT_ERROR_ARGUMENTS);
                 }
             }
             else
@@ -104,7 +109,8 @@ class Cli
                 }
                 else
                 {
-                    // TODO: raise error
+                    printError('Only one file at a time can be parsed.');
+                    Sys.exit(EXIT_ERROR_ARGUMENTS);
                 }
             }
             i++;
