@@ -1,0 +1,12 @@
+# TOTAL
+  $ Money: 1674.5 [Calculated]
+  ## Account
+    $ Money: 1674.5 [Calculated]
+    ### Groceries
+      $ Money: -300
+    ### Taxes
+      $ Money: -25.5
+    ### Salary
+      $ Money: 1500
+    ### Gift
+      $ Money: 500
