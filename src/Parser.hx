@@ -405,9 +405,14 @@ class Parser
         return r.matched(2);
     }
 
+    private function isUnitValueCorrect(unitValue:String):Bool
+    {
+        var unitValueRegex = ~/^[-+]?[0-9]+(\.[0-9]+)?$/;
+        return unitValueRegex.match(unitValue);
+    }
+
     private function getUnitDefinitionRegex():EReg
     {
-        // TODO: change the unit value regex?
         return ~/^\s*\$\s*(.+)\s*:\s*(.+)/;
     }
 
@@ -434,6 +439,10 @@ class Parser
             return 0;
         }
         var valueString = r.matched(2);
+        if(!isUnitValueCorrect(valueString))
+        {
+            throw 'The value "${valueString}" is not a valid unit value.';
+        }
         try
         {
             var value = Std.parseFloat(valueString);
