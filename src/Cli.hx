@@ -69,38 +69,38 @@ class Cli
                 for(j in 1...args[i].length)
                 {
                     var c = args[i].charAt(j);
-                    if(args[i] == "v")
+                    if(c == "v")
                     {
                         arguments.config.printVersion = true;
                     }
-                    else if(args[i] == "t")
+                    else if(c == "t")
                     {
                         arguments.config.displayTotalNode = true;
                     }
-                    else if(args[i] == "p")
+                    else if(c == "p")
                     {
                         arguments.config.prettify = true;
                     }
-                    else if(args[i] == "j")
+                    else if(c == "j")
                     {
                         arguments.config.toJson = true;
                     }
 
                 }
             }
-            else if(args[i] == "--version" || args[i] == "-v")
+            else if(args[i] == "--version")
             {
                 arguments.config.printVersion = true;
             }
-            else if(args[i] == "--total" || args[i] == "-t")
+            else if(args[i] == "--total")
             {
                 arguments.config.displayTotalNode = true;
             }
-            else if(args[i] == "--prettify" || args[i] == "-p")
+            else if(args[i] == "--prettify")
             {
                 arguments.config.prettify = true;
             }
-            else if(args[i] == "--json" || args[i] == "-j")
+            else if(args[i] == "--json")
             {
                 arguments.config.toJson = true;
             }
