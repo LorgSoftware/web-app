@@ -5,13 +5,10 @@ package;
  */
 class Config
 {
-    public var displayIgnored:Bool = true;
-    public var displayIgnoredAndCalculated:Bool = true;
-    public var displayTotalNode:Bool = true;
-    public var addIndent:Bool = true;
+    public var printVersion:Bool = false;
+    public var displayTotalNode:Bool = false;
     public var prettify:Bool = false;
     public var toJson:Bool = false;
-    public var totalName:String = "TOTAL";
 
     public function new()
     {

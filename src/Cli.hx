@@ -64,42 +64,45 @@ class Cli
         var i = 0;
         while(i < args.length)
         {
-            if(args[i] == "--no-ignored" || args[i] == "-nig")
+            if(args[i].length > 1 && args[i].charAt(0) == "-" && args[i].charAt(1) != "-")
             {
-                arguments.config.displayIgnored = false;
+                for(j in 1...args[i].length)
+                {
+                    var c = args[i].charAt(j);
+                    if(args[i] == "v")
+                    {
+                        arguments.config.printVersion = true;
+                    }
+                    else if(args[i] == "t")
+                    {
+                        arguments.config.displayTotalNode = true;
+                    }
+                    else if(args[i] == "p")
+                    {
+                        arguments.config.prettify = true;
+                    }
+                    else if(args[i] == "j")
+                    {
+                        arguments.config.toJson = true;
+                    }
+
+                }
             }
-            else if(args[i] == "--no-ignored-and-calculated" || args[i] == "-nic")
+            else if(args[i] == "--version" || args[i] == "-v")
             {
-                arguments.config.displayIgnoredAndCalculated = false;
+                arguments.config.printVersion = true;
             }
-            else if(args[i] == "--no-total" || args[i] == "-nt")
+            else if(args[i] == "--total" || args[i] == "-t")
             {
-                arguments.config.displayTotalNode = false;
-            }
-            else if(args[i] == "--no-indent" || args[i] == "-nin")
-            {
-                arguments.config.addIndent = false;
+                arguments.config.displayTotalNode = true;
             }
             else if(args[i] == "--prettify" || args[i] == "-p")
             {
                 arguments.config.prettify = true;
             }
-            else if(args[i] == "--to-json" || args[i] == "-tj")
+            else if(args[i] == "--json" || args[i] == "-j")
             {
                 arguments.config.toJson = true;
-            }
-            else if(args[i] == "--total-name" || args[i] == "-tn")
-            {
-                i++;
-                if(i < args.length)
-                {
-                    arguments.config.totalName = args[i];
-                }
-                else
-                {
-                    printError('The option ${args[i-1]} requires an argument.');
-                    Sys.exit(EXIT_ERROR_ARGUMENTS);
-                }
             }
             else
             {

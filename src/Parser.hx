@@ -23,7 +23,7 @@ class Parser
 
     private function reset():Void
     {
-        totalNode = new Node(config.totalName);
+        totalNode = new Node("TOTAL");
         existingUnits = [];
         sortedUnitNames = [];
         hasError = false;
@@ -155,14 +155,6 @@ class Parser
         }
     }
 
-    private inline function shouldHideUnit(unit:Unit):Bool
-    {
-        return (
-            (unit.isIgnored && !config.displayIgnored)  ||
-            (unit.isIgnored && !unit.isReal && !config.displayIgnoredAndCalculated)
-        );
-    }
-
     private inline function unitToString(unit:Unit):String
     {
         var str = '$ ${unit.name}: ${unit.value}';
@@ -190,27 +182,12 @@ class Parser
             heading += "#";
             indent += "  ";
         }
-        if(!config.addIndent)
-        {
-            indent = "";
-        }
         lines.push('${indent}${heading} ${node.title}');
 
         for(name in sortedUnitNames)
         {
-            if(shouldHideUnit(node.units[name]))
-            {
-                continue;
-            }
             var unitStr = unitToString(node.units[name]);
-            if(config.addIndent)
-            {
-                lines.push('${indent}  ${unitStr}');
-            }
-            else
-            {
-                lines.push(unitStr);
-            }
+            lines.push('${indent}  ${unitStr}');
         }
 
         for(i in 0...node.children.length)
@@ -264,11 +241,6 @@ class Parser
 
         for(name in sortedUnitNames)
         {
-            if(shouldHideUnit(node.units[name]))
-            {
-                continue;
-            }
-
             var unitStr = unitToString(node.units[name]);
             if(node.children.length != 0)
             {
