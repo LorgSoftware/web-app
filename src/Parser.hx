@@ -385,7 +385,7 @@ class Parser
 
     private function getUnitDefinitionRegex():EReg
     {
-        return ~/^\s*\$\s*(.+)\s*:\s*(.+)/;
+        return ~/^\s*\$\s*(.+\S)\s*:\s*(.+)/;
     }
 
     private function isUnitDefinition(line:String):Bool
