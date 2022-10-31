@@ -3,6 +3,8 @@ package;
 /**
  * The default configuration.
  */
+@:expose("Lorg.Config")
+@:keep
 class Config
 {
     public var printVersion:Bool = false;

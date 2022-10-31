@@ -8,6 +8,8 @@ typedef ParseNodeResult = {
 /**
  * Parse the content and return the results in appropriate format.
  */
+@:expose("Lorg.Parser")
+@:keep
 class Parser
 {
     // Indentation step for printing prettily JSON.
