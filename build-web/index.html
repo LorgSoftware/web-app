@@ -5,80 +5,144 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lorg</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         html {
-            height: 100%;
+            margin: 0px;
+            padding: 0px;
         }
 
         body {
-            height: 100%;
-            min-height: 100%;
+            margin: 0px;
+            padding: 0px;
         }
 
         .editor {
-            height: 100%;
-            min-height: 100%;
+            margin-bottom: 4px;
         }
 
         .editor__input-panel {
             display: flex;
-            height: 100%;
-            min-height: 100%;
         }
 
         .editor__input-column {
             flex: 50%;
-            height: 100%;
-            min-height: 100%;
+            padding-right: 4px;
         }
 
         .editor__result-column {
             flex: 50%;
-            height: 100%;
-            min-height: 100%;
-        }
-
-        .editor__user-content {
-            width: 90%;
-            height: 90%;
+            padding-left: 4px;
         }
 
         .editor__options-panel {
+            margin-top: 4px;
+            margin-bottom: 4px;
+            padding: 4px;
+            background-color: #eeeeee;
+        }
+
+        .editor__options-summary {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .editor__options-summary:hover {
+            cursor: pointer;
+        }
+
+        .editor__options-container {
             display: flex;
+        }
+
+        .editor__option {
+            padding: 4px;
+        }
+
+        .editor__editor {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ccc;
+            padding: 5px;
+            font-family: monospace;
+            display: block;
+        }
+
+        .editor__submit-row {
+            margin-top: 4px;
+        }
+
+        .editor__submit {
+            font-size: 18px;
+            padding: 3px 12px;
+            word-spacing: 10px;
+        }
+
+        .editor__submit-explanation {
+            font-size: 0.7em;
+        }
+
+        .editor__result-display {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ccc;
+            padding: 5px;
+            font-family: monospace;
+            display: block;
+        }
+
+        @media only screen and (max-width: 950px) {
+            .container {
+                width: 100%;
+                padding-left: 4px;
+                padding-right: 4px;
+            }
+        }
+
+        @media only screen and (max-width: 300px) {
+            .editor__options-container {
+                display: block;
+            }
+
+            .editor__option {
+                display: block;
+            }
         }
 
     </style>
 </head>
 <body>
 
-    <div class="editor">
-        <div class="editor__options-panel">
-            <div class="editor__option">
-                <input type="checkbox" id="no-ignored" /><label for="no-ignored">No ignored</label>
+    <div class="container">
+        <div class="editor">
+            <div class="editor__options-panel">
+                <details>
+                    <summary class="editor__options-summary">Options</summary>
+                    <div class="editor__options-container">
+                        <div class="editor__option">
+                            <input type="checkbox" id="total" /><label for="total">Total</label>
+                        </div>
+                        <div class="editor__option">
+                            <input type="checkbox" id="prettify" /><label for="prettify">Prettify</label>
+                        </div>
+                        <div class="editor__option">
+                            <input type="checkbox" id="to-json" /><label for="to-json">To JSON</label>
+                        </div>
+                    </div>
+                </details>
             </div>
-            <div class="editor__option">
-                <input type="checkbox" id="no-ignored-and-calculated" /><label for="no-ignored-and-calculated">No ignored and calculated</label>
-            </div>
-            <div class="editor__option">
-                <input type="checkbox" id="no-total" /><label for="no-total">No total</label>
-            </div>
-            <div class="editor__option">
-                <input type="checkbox" id="prettify" /><label for="prettify">Prettify</label>
-            </div>
-            <div class="editor__option">
-                <input type="checkbox" id="to-json" /><label for="to-json">To JSON</label>
-            </div>
-            <div class="editor__option">
-                <label for="total-name">Total name</label>: <input type="text" id="total-name" />
-            </div>
-        </div>
-        <div class="editor__input-panel">
-            <div class="editor__input-column">
-                <textarea id="user-content" class="editor__user-content"></textarea><br/>
-                <button id="button-submit">Submit</button>
-                Or press Ctrl + Enter.
-            </div>
-            <div class="editor__result-column">
-                <pre id="result-display"></pre>
+            <div class="editor__input-panel">
+                <div class="editor__input-column">
+                    <textarea id="user-editor" class="editor__editor" contenteditable="true"></textarea>
+                    <div class="editor__submit-row">
+                        <button id="button-submit" class="editor__submit">Submit &gt;</button>
+                        <span class="editor__submit-explanation">Or press Ctrl + Enter.</span>
+                    </div>
+                </div>
+                <div class="editor__result-column">
+                    <textarea id="result-display" class="editor__result-display"></textarea>
+                </div>
             </div>
         </div>
     </div>
@@ -88,13 +152,10 @@
     <script>
         function updateResult() {
             var config = Lorg.createConfig();
-            config.displayIgnored = !document.getElementById("no-ignored").checked;
-            config.displayIgnoredAndCalculated = !document.getElementById("no-ignored-and-calculated").checked;
-            config.displayTotalNode = !document.getElementById("no-total").checked;
+            config.displayTotalNode = document.getElementById("total").checked;
             config.prettify = document.getElementById("prettify").checked;
             config.toJson = document.getElementById("to-json").checked;
-            config.totalName = document.getElementById("total-name").value;
-            var content = document.getElementById("user-content").value;
+            var content = document.getElementById("user-editor").value;
             var parser = Lorg.createParser(config);
             parser.parse(content);
             if(!parser.hasError) {
@@ -104,22 +165,19 @@
                 } else {
                     result = parser.getResultAsString();
                 }
-                document.getElementById("result-display").innerText = result;
+                document.getElementById("result-display").value = result;
             } else {
-                document.getElementById("result-display").innerText = parser.errorMessage;
+                document.getElementById("result-display").value = parser.errorMessage;
             }
         }
 
         function initialize() {
             var config = Lorg.createConfig();
-            document.getElementById("no-ignored").checked = !config.displayIgnored;
-            document.getElementById("no-ignored-and-calculated").checked = !config.displayIgnoredAndCalculated;
-            document.getElementById("no-total").checked = !config.displayTotalNode;
+            document.getElementById("total").checked = config.displayTotalNode;
             document.getElementById("prettify").checked = config.prettify;
             document.getElementById("to-json").checked = config.toJson;
-            document.getElementById("total-name").value = config.totalName;
 
-            document.getElementById("user-content").onkeypress = function(e) {
+            document.getElementById("user-editor").onkeypress = function(e) {
                 if(e.key = "Enter" && e.ctrlKey === true) {
                     updateResult();
                 }
