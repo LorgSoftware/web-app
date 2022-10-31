@@ -10,6 +10,9 @@ typedef ParseNodeResult = {
  */
 class Parser
 {
+    // Indentation step for printing prettily JSON.
+    public final INDENTATION_STEP:String = "    ";
+
     public final NODE_DEFINITION_CHARACTER:String = "#";
     public final UNIT_DEFINITION_CHARACTER:String = "$";
     public final UNIT_NAME_VALUE_SEPARATOR:String = ":";
@@ -83,8 +86,272 @@ class Parser
     public function getResultAsJson():String
     {
         var nodesToConvert:Array<Node> = getNodesToConvert();
-        var spaces = (config.prettify) ? "    " : null;
-        return haxe.Json.stringify(nodesToConvert, null, spaces);
+        if(config.prettify)
+        {
+            return getJsonPretty(nodesToConvert);
+        }
+        else
+        {
+            return getJson(nodesToConvert);
+        }
+    }
+
+    private function escapeJson(str:String):String
+    {
+        var escaped:String = "";
+        for(i in 0...str.length)
+        {
+            var c:String = str.charAt(i);
+            var code:Int = str.charCodeAt(i);
+            if(c == '"')
+            {
+                escaped += "\\\"";
+            }
+            else if(c == "\\")
+            {
+                escaped += "\\\\";
+            }
+            else if(c == '\n')
+            {
+                escaped += "\\n";
+            }
+            else if(c == '\r')
+            {
+                escaped += "\\r";
+            }
+            else if(c == '\t')
+            {
+                escaped += "\\t";
+            }
+            else if(0x00 <= code && code <= 0x1f)
+            {
+                escaped += "\\u00";
+                if(0x00 <= code && code < 0x10)
+                {
+                    escaped += '0';
+                }
+                else
+                {
+                    escaped += '1';
+                    code -= 0x10;
+                }
+                if(0 <= code && code < 10)
+                {
+                    escaped += '${code}';
+                }
+                else if(code == 10)
+                {
+                    escaped += 'a';
+                }
+                else if(code == 11)
+                {
+                    escaped += 'b';
+                }
+                else if(code == 12)
+                {
+                    escaped += 'c';
+                }
+                else if(code == 13)
+                {
+                    escaped += 'd';
+                }
+                else if(code == 14)
+                {
+                    escaped += 'e';
+                }
+                else if(code == 15)
+                {
+                    escaped += 'f';
+                }
+            }
+            else
+            {
+                escaped += c;
+            }
+        }
+
+        return escaped;
+    }
+
+    private function getJsonUnit(unit:Unit):String
+    {
+        var result = "";
+        // NOTE: Instead of escaping that everytime, maybe we should map the unit
+        // names with escaped unit names.
+        var escapedUnitName = escapeJson(unit.name);
+        result += '"${escapedUnitName}":' + "{";
+        result += '"name":"${escapedUnitName}",';
+        result += '"value":${unit.value},';
+        result += '"isReal":${unit.isReal},';
+        result += '"isIgnored":${unit.isIgnored}';
+        result += '}';
+        return result;
+    }
+
+    private function getJsonNode(node:Node):String
+    {
+        var result = "{";
+
+        // Print title.
+        result += '"title":"${escapeJson(node.title)}"';
+
+        // Print the units.
+        result += ',"units":{';
+        {
+            // Needed to manage the last `,`.
+            var separator = "";
+            for(name in sortedUnitNames)
+            {
+                result += separator;
+                result += getJsonUnit(node.units[name]);
+                separator = ",";
+            }
+        }
+        result += "}";
+
+        // Print children.
+        result += ',"children":[';
+        if(node.children.length > 0)
+        {
+            for(i in 0...(node.children.length - 1))
+            {
+                result += getJsonNode(node.children[i]);
+                result += ",";
+            }
+            result += getJsonNode(node.children[node.children.length-1]);
+        }
+        result += "]";
+        result += "}";
+        return result;
+    }
+
+    private function getJson(nodesToConvert:Array<Node>):String
+    {
+        // NOTE: This code should be refactored. We avoid in this software
+        // recursion because it is not compatible with large data. But for the
+        // moment, I do not know how to write this code using stacks (for example).
+        // The fact that a node should print something before *and* after its
+        // children is the problem.
+
+        var result:String = "[";
+
+        if(nodesToConvert.length > 0)
+        {
+            for(i in 0...(nodesToConvert.length - 1))
+            {
+                result += getJsonNode(nodesToConvert[i]);
+                result += ",";
+            }
+            result += getJsonNode(nodesToConvert[nodesToConvert.length-1]);
+        }
+        result += "]";
+        // result += "\n";
+        return result;
+    }
+
+    private function getJsonPrettyNode(
+        node:Node, indentation:String, hasSibling:Bool
+    ):String
+    {
+        var indentationKey = indentation + INDENTATION_STEP;
+        var indentationValue = indentation + INDENTATION_STEP + INDENTATION_STEP;
+
+        var result = indentation + "{\n";
+
+        // Print title.
+        result += '${indentationKey}"title": "${escapeJson(node.title)}",\n';
+
+        // Print the units.
+        if(!node.units.keys().hasNext())  // Check if empty.
+        {
+            result += '${indentationKey}"units": {},\n';
+        }
+        else
+        {
+            result += '${indentationKey}"units": ' + "{\n";
+
+            // Needed to manage the last `},`.
+            var isFirst = true;
+            for(name in sortedUnitNames)
+            {
+                var unit:Unit = node.units[name];
+                // NOTE: Instead of escaping that everytime, maybe we should map the unit
+                // names with escaped unit names.
+                var escapedUnitName = escapeJson(unit.name);
+
+                var i:String = indentationValue;
+                var iv:String = i + INDENTATION_STEP;
+
+                if(isFirst)
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    // Closing the last sibling unit JSON print.
+                    result += i + "},\n";
+                }
+
+                result += '${i}"${escapedUnitName}": ' + "{\n";
+                result += '${iv}"name": "${escapedUnitName}",\n';
+                result += '${iv}"value": ${unit.value},\n';
+                result += '${iv}"isReal": ${unit.isReal},\n';
+                result += '${iv}"isIgnored": ${unit.isIgnored}\n';
+            }
+            if(node.units.keys().hasNext())  // Check not empty.
+            {
+                // Closing the last sibling unit JSON print.
+                result += indentationValue + "}\n";
+            }
+            result += indentationKey + '},\n';
+        }
+
+        // Print children.
+        if(node.children.length == 0)
+        {
+            result += '${indentationKey}"children": []\n';
+        }
+        else
+        {
+            result += '${indentationKey}"children": [\n';
+            for(i in 0...node.children.length - 1)
+            {
+                result += getJsonPrettyNode(node.children[i], indentationValue, true);
+            }
+            result += getJsonPrettyNode(
+                node.children[node.children.length-1], indentationValue, false
+            );
+            result += '${indentationKey}]\n';
+        }
+
+        if(hasSibling)
+        {
+            result += indentation + "},\n";
+        }
+        else
+        {
+            result += indentation + "}\n";
+        }
+        return result;
+    }
+
+    private function getJsonPretty(nodesToConvert:Array<Node>):String
+    {
+        // NOTE: This code should be refactored. We should avoid recursion.
+
+        var result = "[\n";
+        if(nodesToConvert.length > 0)
+        {
+            for(i in 0...(nodesToConvert.length - 1))
+            {
+                result += getJsonPrettyNode(nodesToConvert[i], INDENTATION_STEP, true);
+            }
+            result += getJsonPrettyNode(
+                nodesToConvert[nodesToConvert.length-1], INDENTATION_STEP, false
+            );
+        }
+        result += "]";
+        return result;
     }
 
     private function getNodesToConvert():Array<Node>
