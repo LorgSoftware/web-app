@@ -1,9 +1,0 @@
-# TOTAL
-  $ Unit 1: 15 [Calculated]
-  $ Unit 2: 27.5 [Calculated]
-  ## Node title 1
-    $ Unit 1: 15
-    $ Unit 2: 27.5
-  ## Node title 2
-    $ Unit 1: 0 [Calculated]
-    $ Unit 2: 0 [Calculated]
