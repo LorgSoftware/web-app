@@ -183,6 +183,22 @@
                 }
             };
             document.getElementById("button-submit").onclick = updateResult;
+
+            // Create an example to help the user
+            var example = [
+                "# House",
+                "## Living room",
+                "$ Beds: 0",
+                "$ Chairs: 4",
+                "## Master bedroom",
+                "$ Beds: 1",
+                "$ Chairs: 2",
+                "## Guest bedroom",
+                "$ Beds: 1",
+                "$ Chairs: 1",
+            ];
+            document.getElementById("user-editor").value = example.join("\n");
+            updateResult();
         }
 
         initialize();
