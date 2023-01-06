@@ -9,5 +9,5 @@ tab_width = 4
 [Makefile]
 indent_style = tab
 
-[*.hx]
+[*.{hx,html}]
 indent_style = tab
