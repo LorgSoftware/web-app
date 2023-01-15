@@ -11,6 +11,12 @@ and even trying it at [the official website](https://www.lorg.software).
 This project licensed is under GNU AGPLv3 (GNU Affero General Public License
 version 3). The terms and conditions of this license are in the `LICENSE` file.
 
+Note that if you simply include the web app in your website, we consider that
+as an "aggregate". (Read the section "5. Conveying Modified Source Versions.".)
+In other words, if you include a modified or unmodified version of the web app
+into your work, we want you to share the modified or unmodified version of the
+web app but not necessarily your own independent work.
+
 ## Copyright
 
 ```
